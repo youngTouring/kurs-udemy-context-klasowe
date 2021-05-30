@@ -1,25 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { PureComponent } from 'react';
+import {AppContext, defaultObject} from './AppContext';
+import './style.css';
+import UserInfo from './UserInfo';
+import Button from './Button';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends PureComponent {
+
+  state = {
+    isUserLogged: defaultObject.isUserLogged,
+    isUserAdult: true,
+  }
+
+  render(){
+    return(
+      <div>
+        <AppContext.Provider value = {{
+            isUserLogged: this.state.isUserLogged,
+            toggleLoggedState: this.handleToggleState
+          }}>
+          <UserInfo/>
+          <Button/>
+        </AppContext.Provider>
+
+        {/* oba provideray działają teraz niezależnie  - informacja jest pobierana z najbliższego providera */}
+        <AppContext.Provider value = {{
+            isUserLogged: this.state.isUserAdult,
+            toggleLoggedState: this.handleStateIsAdult
+          }}>
+          <UserInfo/>
+          <Button/>
+        </AppContext.Provider>
+      </div>
+    )  
+  }
+
+  handleToggleState = () => this.setState(prevState => ({
+    isUserLogged: !prevState.isUserLogged,
+  }));
+
+  handleStateIsAdult = () => this.setState(prevState => ({
+    isUserAdult: !prevState.isUserAdult,
+  }));
+
+
 }
 
 export default App;
